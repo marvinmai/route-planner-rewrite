@@ -1,4 +1,34 @@
-# Web-based Route Planner
+# Route Planner Rewrite
+
+A rewrite of my 2022 university route planner,
+[webbased-route-planner](https://github.com/marvinmai/webbased-route-planner), in a new
+stack. The original works, but it was written in one semester, has no tests for the
+web app and runs on dependencies from 2022 (Spring Boot 2.7, Angular 13).
+
+## Plan
+
+The rewrite is done the way you would modernise a legacy system you can't break:
+
+1. **Tests around the original.** Write characterization tests that pin down what the
+   2022 version actually does: REST responses for nearest-node and shortest-path
+   queries, and the benchmark results against the course's reference solutions.
+2. **Rewrite against those tests.** Replace the backend with a new stack (Kotlin or Go,
+   not decided yet) and keep every test green. The tests talk to the system through its
+   interfaces, so they don't change with the language.
+3. **Improve with a safety net.** Faster startup, lower memory use and quicker queries,
+   each change measured against the original.
+
+## Status
+
+- [x] Copy the original with its full history
+- [ ] Characterization tests for the REST API and the benchmark
+- [ ] Choose the new stack
+- [ ] Rewrite the backend
+- [ ] Revisit the frontend
+
+## The original project
+
+Everything below describes the 2022 version, the starting point of this rewrite.
 
 Shortest-path routing on the full road network of Germany (25 million nodes, 50 million
 edges), with a self-written Dijkstra in Java, a Spring Boot REST API and an Angular +
@@ -6,7 +36,7 @@ Leaflet map in the browser.
 
 ![Route from Stuttgart to Munich calculated on the Germany graph](docs/screenshot.jpg)
 
-## About this project
+### About this project
 
 I built this in a team of two between April and June 2022, during the
 *Programmierprojekt* (programming project) course at the University of Stuttgart in the
@@ -33,14 +63,14 @@ release setup.
 This repository is kept as it was finished in 2022 and isn't maintained. The
 dependencies (Spring Boot 2.7, Angular 13) are dated.
 
-## Features
+### Features
 
 - Click on the map to snap to the nearest node of the road graph.
 - Click a second point to get the shortest path, drawn on the map as GeoJSON.
 - Command-line benchmark for graph loading, nearest-node lookup, one-to-one and
   one-to-all Dijkstra.
 
-## How it works
+### How it works
 
 ```
 Browser (Angular + Leaflet)
@@ -65,12 +95,12 @@ pathfinder/  Graph reader, adjacency array, Dijkstra, nearest-node lookup, bench
 - **Startup:** the graph (about 3 GB of text) loads in about a minute. A Stuttgart →
   Munich query takes about 10 seconds on a current laptop.
 
-## Tech stack
+### Tech stack
 
 Java · Maven (multi-module) · Spring Boot 2.7 · JUnit 4 · Angular 13 · TypeScript ·
 Leaflet · OpenStreetMap tiles
 
-## Getting started
+### Getting started
 
 **Prerequisites:** a JDK and Maven (last built in 2026 with JDK 27 and Maven 3.8).
 Node.js is downloaded by the build. You need the graph file `germany.fmi`. It was
@@ -92,7 +122,7 @@ cd pathfinder
 ./benchmark.sh <graph.fmi> <queries.que> <longitude> <latitude> <source-node-id>
 ```
 
-## Project structure
+### Project structure
 
 | Folder | Content |
 |---|---|
@@ -100,7 +130,7 @@ cd pathfinder
 | `webapp/` | Spring Boot application and REST controller |
 | `frontend/` | Angular app with the Leaflet map |
 
-## What I learned
+### What I learned
 
 - Designing data structures for a hard memory limit: measuring memory use, then
   replacing per-node lists of objects with flat primitive arrays until 50 million
